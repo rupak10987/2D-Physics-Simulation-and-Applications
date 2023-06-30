@@ -58,8 +58,8 @@ public:
         if(inp=='A' || inp=='D')
         {
         del_angle=this->angle;
-        this->angle+=(inp=='A')?3:(inp=='D')?-3:0;
-        angle=(int)angle%360;
+        this->angle+=(inp=='A')?5:(inp=='D')?-5:0;
+        //angle=(int)angle%360;
         del_angle=angle-del_angle;
         this->forward_vec.X_Pos=cos((3.1415*angle)/180);
         this->forward_vec.Y_Pos=sin((3.1415*angle)/180);
@@ -67,30 +67,23 @@ public:
         }
         float x_mov=(inp=='W')?10*this->forward_vec.X_Pos:(inp=='S')?-10*this->forward_vec.X_Pos:0;
         float y_mov=(inp=='W')?10*this->forward_vec.Y_Pos:(inp=='S')?-10*this->forward_vec.Y_Pos:0;
+
+
+        if(this->m_id==0)
+        {
         this->m_pos.X_Pos+=x_mov;
         this->m_pos.Y_Pos+=y_mov;
-        if(this->m_id==0)
         for(int i=0; i<this->verts_size; i+=2)
         {
             float rad_angle=3.14159*del_angle/180;
             Transform_matrix_op({this->verts[i],this->verts[i+1]},(inp=='A' || inp=='D')?rad_angle:0,1,x_mov,y_mov,this->m_pos,&this->verts[i]);
 
-
-
-            //translation
-            /*float x_mov=(inp=='W')?3*this->forward_vec.X_Pos:(inp=='S')?-3*this->forward_vec.X_Pos:0;
-            float y_mov=(inp=='W')?3*this->forward_vec.Y_Pos:(inp=='S')?-3*this->forward_vec.Y_Pos:0;
-
-            this->verts[i]+=x_mov;
-            this->verts[i+1]+=y_mov;
-
-            this->m_pos.X_Pos+=x_mov;
-            this->m_pos.Y_Pos+=y_mov;*/
-
         }
+        }
+
         bool col=this->check_collison_sat(colliders);
         if(col)
-        this->render({255,0,0});
+        this->render({255,255,0});
         else
         this->render({255,255,255});
        // std::cout<<"colision="<<col<<"\n";
@@ -124,7 +117,6 @@ public:
                 struct VEC2 axis_n_to_e= {-delY,delX};
                 axis_n_to_e.X_Pos/=sqrt(delY*delY+delX*delX);
                 axis_n_to_e.Y_Pos/=sqrt(delY*delY+delX*delX);
-                // std::cout<<"(nx,ny)="<<axis_n_to_e.X_Pos<<","<<axis_n_to_e.Y_Pos<<"\n";
                 //for points in shape1
                 float max_ov1=-10000000;
                 float min_ov1=10000000;
@@ -132,8 +124,8 @@ public:
                 {
 
                     //dot product btn norm vector and every point of shape 1
-                    float q=((shape1->verts[j]-mid_point_of_axis.X_Pos)*axis_n_to_e.X_Pos)+((shape1->verts[j+1]-mid_point_of_axis.Y_Pos)*axis_n_to_e.Y_Pos);
-                    //float q=(shape1->verts[j]*axis_n_to_e.X_Pos)+(shape1->verts[j+1]*axis_n_to_e.Y_Pos);
+                    //float q=((shape1->verts[j]-mid_point_of_axis.X_Pos)*axis_n_to_e.X_Pos)+((shape1->verts[j+1]-mid_point_of_axis.Y_Pos)*axis_n_to_e.Y_Pos);
+                    float q=(shape1->verts[j]*axis_n_to_e.X_Pos)+(shape1->verts[j+1]*axis_n_to_e.Y_Pos);
                     min_ov1=std::min(min_ov1,q);
                     max_ov1=std::max(max_ov1,q);
                 }
@@ -145,8 +137,8 @@ public:
                 {
                     //dot product btn norm vector and every point of shape 1
 
-                    float q=((shape2->verts[j]-mid_point_of_axis.X_Pos)*axis_n_to_e.X_Pos)+((shape2->verts[j+1]-mid_point_of_axis.Y_Pos)*axis_n_to_e.Y_Pos);
-                    //float q=(shape2->verts[j]*axis_n_to_e.X_Pos)+(shape2->verts[j+1]*axis_n_to_e.Y_Pos);
+                    //float q=((shape2->verts[j]-mid_point_of_axis.X_Pos)*axis_n_to_e.X_Pos)+((shape2->verts[j+1]-mid_point_of_axis.Y_Pos)*axis_n_to_e.Y_Pos);
+                    float q=(shape2->verts[j]*axis_n_to_e.X_Pos)+(shape2->verts[j+1]*axis_n_to_e.Y_Pos);
                     min_ov2=std::min(min_ov2,q);
                     max_ov2=std::max(max_ov2,q);
                 }
@@ -155,7 +147,6 @@ public:
 
                 if(!(max_ov2>=min_ov1 && max_ov1>=min_ov2))
                 {
-                    //std::cout<<"max ov1 = "<<max_ov1<<", min ov1 = "<<min_ov1<<"\n"<<"max ov2 = "<<max_ov2<<", min ov2 = "<<min_ov2<<"\n";
                     return false;
                 }
 
@@ -180,7 +171,6 @@ public:
         }
         }
 
-
         return true;
     };
 
@@ -193,7 +183,7 @@ public:
         int j=(i+2)%this->verts_size;
         draw_line({this->verts[i],this->verts[i+1]},{this->verts[j],this->verts[j+1]},colors);
     }
-    if(this->dynamic)
+
     draw_line({this->verts[4],this->verts[5]},this->m_pos,colors);
     };
 };
@@ -222,7 +212,7 @@ int main()
                                400,500
                              };
 
-    class POLY_COLLIDER* rect=new POLY_COLLIDER(8,&rect_verticies[0],colliders,1,{450,350});;
+    class POLY_COLLIDER* rect=new POLY_COLLIDER(8,&rect_verticies[0],colliders,1,{450,450});;
 
     colliders[0]->dynamic=true;
     //time_loop
@@ -232,7 +222,10 @@ int main()
         swapbuffers();
         cleardevice();
         for(int i=1; i>=0; i--)
-            colliders[i]->update(colliders);
+        {
+         colliders[i]->update(colliders);
+        }
+
 
     }
 
