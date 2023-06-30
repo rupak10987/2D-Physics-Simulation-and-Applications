@@ -27,7 +27,7 @@ public:
     int verts_size;
     int m_id;
     bool in_collision;
-    float angle=-90;
+    float angle=90;
     struct VEC2 m_pos={50,50};
     struct VEC2 forward_vec={0,1};
     POLY_COLLIDER() {};
@@ -54,17 +54,25 @@ public:
         char inp;
         inp=handleEvent();
         //angle update
-        this->angle+=(inp=='A')?1:(inp=='D')?-1:0;
-        //this->forward_vec={cos((3.1415*angle)/180),-sin((3.1415*angle)/180)};
-        this->forward_vec={cos(angle),-sin(angle)};
+        float del_angle=0;
+        if(inp=='A' || inp=='D')
+        {
+        del_angle=this->angle;
+        this->angle+=(inp=='A')?3:(inp=='D')?-3:0;
+        angle=(int)angle%360;
+        del_angle=angle-del_angle;
+        this->forward_vec.X_Pos=cos((3.1415*angle)/180);
+        this->forward_vec.Y_Pos=sin((3.1415*angle)/180);
+        //this->forward_vec={cos(angle),sin(angle)};
+        }
         float x_mov=(inp=='W')?10*this->forward_vec.X_Pos:(inp=='S')?-10*this->forward_vec.X_Pos:0;
-        float y_mov=(inp=='W')?-10*this->forward_vec.Y_Pos:(inp=='S')?10*this->forward_vec.Y_Pos:0;
+        float y_mov=(inp=='W')?10*this->forward_vec.Y_Pos:(inp=='S')?-10*this->forward_vec.Y_Pos:0;
         this->m_pos.X_Pos+=x_mov;
         this->m_pos.Y_Pos+=y_mov;
         if(this->m_id==0)
         for(int i=0; i<this->verts_size; i+=2)
         {
-            float rad_angle=3.14159*angle/180;
+            float rad_angle=3.14159*del_angle/180;
             Transform_matrix_op({this->verts[i],this->verts[i+1]},(inp=='A' || inp=='D')?rad_angle:0,1,x_mov,y_mov,this->m_pos,&this->verts[i]);
 
 
@@ -114,6 +122,8 @@ public:
                 float delX=shape1->verts[a]-shape1->verts[b];
                 struct VEC2 mid_point_of_axis= {(shape1->verts[a]+shape1->verts[b])/2.0, (shape1->verts[a]-shape1->verts[b])/2.0};
                 struct VEC2 axis_n_to_e= {-delY,delX};
+                axis_n_to_e.X_Pos/=sqrt(delY*delY+delX*delX);
+                axis_n_to_e.Y_Pos/=sqrt(delY*delY+delX*delX);
                 // std::cout<<"(nx,ny)="<<axis_n_to_e.X_Pos<<","<<axis_n_to_e.Y_Pos<<"\n";
                 //for points in shape1
                 float max_ov1=-10000000;
@@ -122,8 +132,8 @@ public:
                 {
 
                     //dot product btn norm vector and every point of shape 1
-                   // float q=((shape1->verts[j]-mid_point_of_axis.X_Pos)*axis_n_to_e.X_Pos)+((shape1->verts[j+1]-mid_point_of_axis.Y_Pos)*axis_n_to_e.Y_Pos);
-                    float q=(shape1->verts[j]*axis_n_to_e.X_Pos)+(shape1->verts[j+1]*axis_n_to_e.Y_Pos);
+                    float q=((shape1->verts[j]-mid_point_of_axis.X_Pos)*axis_n_to_e.X_Pos)+((shape1->verts[j+1]-mid_point_of_axis.Y_Pos)*axis_n_to_e.Y_Pos);
+                    //float q=(shape1->verts[j]*axis_n_to_e.X_Pos)+(shape1->verts[j+1]*axis_n_to_e.Y_Pos);
                     min_ov1=std::min(min_ov1,q);
                     max_ov1=std::max(max_ov1,q);
                 }
@@ -135,8 +145,8 @@ public:
                 {
                     //dot product btn norm vector and every point of shape 1
 
-                    //float q=((shape2->verts[j]-mid_point_of_axis.X_Pos)*axis_n_to_e.X_Pos)+((shape2->verts[j+1]-mid_point_of_axis.Y_Pos)*axis_n_to_e.Y_Pos);
-                    float q=(shape2->verts[j]*axis_n_to_e.X_Pos)+(shape2->verts[j+1]*axis_n_to_e.Y_Pos);
+                    float q=((shape2->verts[j]-mid_point_of_axis.X_Pos)*axis_n_to_e.X_Pos)+((shape2->verts[j+1]-mid_point_of_axis.Y_Pos)*axis_n_to_e.Y_Pos);
+                    //float q=(shape2->verts[j]*axis_n_to_e.X_Pos)+(shape2->verts[j+1]*axis_n_to_e.Y_Pos);
                     min_ov2=std::min(min_ov2,q);
                     max_ov2=std::max(max_ov2,q);
                 }
@@ -156,13 +166,20 @@ public:
         struct VEC2 d={shape2->m_pos.X_Pos-shape1->m_pos.X_Pos, shape2->m_pos.Y_Pos-shape1->m_pos.Y_Pos};
         float s=sqrt(d.X_Pos*d.X_Pos+d.Y_Pos*d.Y_Pos);
 
-        for(int v=0;v<shape1->verts_size;v+=2)
+        for(int shape=0;shape<2;shape++)
         {
-        shape1->verts[v]-=0.02*(overlap*d.X_Pos)/s;
-        shape1->verts[v+1]-=0.02*(overlap*d.Y_Pos)/s;
+        if(colliders[shape]->m_id!=0)
+        {
+        for(int v=0;v<colliders[shape]->verts_size;v+=2)
+        {
+        colliders[shape]->verts[v]-=(overlap*d.X_Pos)/s;
+        colliders[shape]->verts[v+1]-=(overlap*d.Y_Pos)/s;
         }
-        shape1->m_pos.X_Pos-=0.02*(overlap*d.X_Pos)/s;
-        shape1->m_pos.Y_Pos-=0.02*(overlap*d.Y_Pos)/s;
+        colliders[shape]->m_pos.X_Pos-=(overlap*d.X_Pos)/s;
+        colliders[shape]->m_pos.Y_Pos-=(overlap*d.Y_Pos)/s;
+        }
+        }
+
 
         return true;
     };
@@ -177,7 +194,7 @@ public:
         draw_line({this->verts[i],this->verts[i+1]},{this->verts[j],this->verts[j+1]},colors);
     }
     if(this->dynamic)
-    draw_line({this->verts[4],this->verts[5]},{this->verts[4]+10*this->forward_vec.X_Pos,this->verts[5]+10*this->forward_vec.Y_Pos},colors);
+    draw_line({this->verts[4],this->verts[5]},this->m_pos,colors);
     };
 };
 
@@ -199,13 +216,13 @@ int main()
 
     class POLY_COLLIDER* triangle=new POLY_COLLIDER(6,&triangle_verticies[0],colliders,0,{450,50});;;
 
-    float rect_verticies[8]= {1,70,
-                              100,70,
-                              100,170,
-                              1,170
+    float rect_verticies[8]= {400,400,
+                               500,400,
+                               500,500,
+                               400,500
                              };
 
-    class POLY_COLLIDER* rect=new POLY_COLLIDER(8,&rect_verticies[0],colliders,1,{50,120});;
+    class POLY_COLLIDER* rect=new POLY_COLLIDER(8,&rect_verticies[0],colliders,1,{450,350});;
 
     colliders[0]->dynamic=true;
     //time_loop
