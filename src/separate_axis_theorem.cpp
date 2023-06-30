@@ -16,6 +16,8 @@ struct VEC3
 };
 void draw_line(struct VEC2 P,struct VEC2 P1,struct VEC3 col);
 char handleEvent();
+double** Matrix_Multiplication(double**matA,double**matB,int rowA,int collumnA,int rowB,int collumnB);
+void Transform_matrix_op(struct VEC2 pos, float angle,float scale,float t_x,float t_y,struct VEC2 m_pos,float *verts);
 
 class POLY_COLLIDER
 {
@@ -49,27 +51,33 @@ public:
     {
 
 
-        char inp=handleEvent();
+        char inp;
+        inp=handleEvent();
         //angle update
-        this->angle+=(inp=='A')?5:(inp=='D')?-5:0;
-        this->forward_vec={cos((3.1415*angle)/180.0),-sin((3.1415*angle)/180.0)};
-
+        this->angle+=(inp=='A')?1:(inp=='D')?-1:0;
+        //this->forward_vec={cos((3.1415*angle)/180),-sin((3.1415*angle)/180)};
+        this->forward_vec={cos(angle),-sin(angle)};
+        float x_mov=(inp=='W')?10*this->forward_vec.X_Pos:(inp=='S')?-10*this->forward_vec.X_Pos:0;
+        float y_mov=(inp=='W')?-10*this->forward_vec.Y_Pos:(inp=='S')?10*this->forward_vec.Y_Pos:0;
+        this->m_pos.X_Pos+=x_mov;
+        this->m_pos.Y_Pos+=y_mov;
         if(this->m_id==0)
         for(int i=0; i<this->verts_size; i+=2)
         {
-            //rotation
+            float rad_angle=3.14159*angle/180;
+            Transform_matrix_op({this->verts[i],this->verts[i+1]},(inp=='A' || inp=='D')?rad_angle:0,1,x_mov,y_mov,this->m_pos,&this->verts[i]);
 
 
 
             //translation
-            float x_mov=(inp=='W')?3*this->forward_vec.X_Pos:(inp=='S')?-3*this->forward_vec.X_Pos:0;
+            /*float x_mov=(inp=='W')?3*this->forward_vec.X_Pos:(inp=='S')?-3*this->forward_vec.X_Pos:0;
             float y_mov=(inp=='W')?3*this->forward_vec.Y_Pos:(inp=='S')?-3*this->forward_vec.Y_Pos:0;
 
             this->verts[i]+=x_mov;
             this->verts[i+1]+=y_mov;
 
             this->m_pos.X_Pos+=x_mov;
-            this->m_pos.Y_Pos+=y_mov;
+            this->m_pos.Y_Pos+=y_mov;*/
 
         }
         bool col=this->check_collison_sat(colliders);
@@ -277,46 +285,127 @@ char handleEvent()
         // Convert the char to integer
          int keyCode = static_cast<int>(inputKey);
         // Handle different key codes
-        switch (keyCode)
-        {
-        case 27: // ASCII code for ESC key
-            return '`';
-            break;
-        case 13: // ASCII code for Enter key
-            std::cout<<"\N";
-            return '\n';
-            break;
-        case 87: // ASCII code for Enter key
-            {
-            std::cout<<"W";
+
+        if(keyCode==87)
             return 'W';
-            break;
-            }
-
-        case 65: // ASCII code for Enter key
-            {
-              std::cout<<"A";
+        else if(keyCode==65)
             return 'A';
-            break;
-            }
-
-        case 83: // ASCII code for Enter key
-            {
-             std::cout<<"S";
+        else if(keyCode==83)
             return 'S';
-            break;
-            }
-
-        case 68: // ASCII code for Enter key
-            {
-             std::cout<<"D";
+        else if(keyCode==68)
             return 'D';
-            break;
-            }
-
-        default:
-            return '.';
-      }
 }
 
 
+
+double** Matrix_Multiplication(double**matA,double**matB,int rowA,int collumnA,int rowB,int collumnB)
+{
+    double **MAT;
+    MAT=new double*[rowA];
+    for(int i=0; i<rowA; i++)
+        MAT[i]=new double[collumnB];
+    for(int i=0; i<rowA; i++)
+        for(int j=0; j<collumnB; j++)
+            MAT[i][j]=0;
+
+    if(collumnA!=rowB)
+    {
+        return MAT;
+    }
+
+    for(int i=0; i<rowA; i++)
+    {
+        for(int j=0; j<collumnB; j++)
+        {
+            for(int k=0; k<collumnA; k++)
+                MAT[i][j]+=matA[i][k]*matB[k][j];
+        }
+    }
+    return MAT;
+}
+
+
+void Transform_matrix_op(struct VEC2 pos, float angle,float scale,float t_x,float t_y,struct VEC2 m_pos, float *verts)
+{
+    double **pos_mat;
+    pos_mat=new double*[3];
+    for(int i=0; i<3; i++)
+    {
+        pos_mat[i]=new double;
+    }
+    pos_mat[0][0]=pos.X_Pos;
+    pos_mat[1][0]=pos.Y_Pos;
+    pos_mat[2][0]=1;
+
+    double **scale_mat;
+    double **rot_mat_z;
+    double **translate_mat;
+    scale_mat=new double*[3];
+    rot_mat_z=new double*[3];
+    translate_mat=new double*[3];
+
+
+    for(int i=0; i<3; i++)
+    {
+        scale_mat[i]=new double[3];
+        rot_mat_z[i]=new double[3];
+        translate_mat[i]=new double[3];
+    }
+
+    for(int i=0; i<3; i++)
+    for(int j=0; j<3; j++)
+        {
+            scale_mat[i][j]=0;
+            rot_mat_z[i][j]=0;
+            translate_mat[i][j]=0;
+        }
+
+
+    scale_mat[0][0]=scale;
+    scale_mat[1][1]=scale;
+    scale_mat[2][2]=1;
+
+    rot_mat_z[0][0]=cos(angle);
+    rot_mat_z[0][1]=-sin(angle);
+    rot_mat_z[1][0]=sin(angle);
+    rot_mat_z[1][1]=cos(angle);
+    rot_mat_z[2][2]=1;
+
+
+    translate_mat[0][2]=-m_pos.X_Pos;
+    translate_mat[1][2]=-m_pos.Y_Pos;
+    translate_mat[2][2]=1;
+    translate_mat[1][1]=1;
+    translate_mat[0][0]=1;
+
+
+
+    double **result_mat;
+    result_mat=new double*[3];
+    for(int i=0; i<3; i++)
+        result_mat[i]=new double[3];
+
+
+    double **row_vector;
+    row_vector=new double*[3];
+    for(int i=0; i<3; i++)
+        row_vector[i]=new double;
+
+    //translate points to origin9(-m_pos)
+    row_vector=Matrix_Multiplication(scale_mat,pos_mat,3,3,3,1);
+    row_vector=Matrix_Multiplication(translate_mat,pos_mat,3,3,3,1);
+    row_vector=Matrix_Multiplication(rot_mat_z,row_vector,3,3,3,1);
+    translate_mat[0][2]=m_pos.X_Pos;
+    translate_mat[1][2]=m_pos.Y_Pos;
+    row_vector=Matrix_Multiplication(translate_mat,row_vector,3,3,3,1);
+    translate_mat[0][2]=t_x;
+    translate_mat[1][2]=t_y;
+    row_vector=Matrix_Multiplication(translate_mat,row_vector,3,3,3,1);
+
+
+    verts[0]=(float)row_vector[0][0];
+    verts[1]=(float)row_vector[1][0];
+
+
+
+}
