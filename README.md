@@ -1,4 +1,4 @@
 # Separated_axis_theorem_polygon_collision_detection_and_response
  polygonal collision detection and response from scratch using SAT algorithm
 
-[Demonstration Video Link](https://github.com/rupak10987/Separated_axis_theorem_polygon_collision_detection_and_response/blob/29f0076726700cd57b3dbf630d743e432a509677/src/SAT_VID2.mp4)
+[DEMO_VIDEO_LINK](https://github.com/rupak10987/Separated_axis_theorem_polygon_collision_detection_and_response/blob/312033f392b0b04ee58fdd5d2606fb5e5b13e9f9/src/SAT_VID2.mp4)
