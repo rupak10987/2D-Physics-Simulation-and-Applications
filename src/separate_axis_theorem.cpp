@@ -47,7 +47,7 @@ public:
 
 
 
-    void update( class POLY_COLLIDER* colliders[],int num_of_colliders)
+    void update( class POLY_COLLIDER* colliders[],int num_of_colliders,float deltatime)
     {
 
 
@@ -58,15 +58,15 @@ public:
         if(inp=='A' || inp=='D')
         {
         del_angle=this->angle;
-        this->angle+=(inp=='A')?5:(inp=='D')?-5:0;
+        this->angle+=(inp=='D')?100*deltatime:(inp=='A')?-100*deltatime:0;
         //angle=(int)angle%360;
         del_angle=angle-del_angle;
         this->forward_vec.X_Pos=cos((3.1415*angle)/180);
         this->forward_vec.Y_Pos=sin((3.1415*angle)/180);
         //this->forward_vec={cos(angle),sin(angle)};
         }
-        float x_mov=(inp=='W')?10*this->forward_vec.X_Pos:(inp=='S')?-10*this->forward_vec.X_Pos:0;
-        float y_mov=(inp=='W')?10*this->forward_vec.Y_Pos:(inp=='S')?-10*this->forward_vec.Y_Pos:0;
+        float x_mov=(inp=='W')?deltatime*200*this->forward_vec.X_Pos:(inp=='S')?deltatime*-200*this->forward_vec.X_Pos:0;
+        float y_mov=(inp=='W')?deltatime*200*this->forward_vec.Y_Pos:(inp=='S')?deltatime*-200*this->forward_vec.Y_Pos:0;
 
 
         if(this->m_id==0)
@@ -83,6 +83,13 @@ public:
         bool col;
         if(this->m_id!=0)
         col=this->check_collison_sat(colliders[0],this);
+
+        for(int pol=0;pol<num_of_colliders;pol++)
+        {
+            if(colliders[pol]->m_id!=0 && colliders[pol]->m_id!=this->m_id)
+            col|=this->check_collison_sat(colliders[pol],this);
+        }
+
         if(col)
         this->render({255,255,0});
         else
@@ -220,15 +227,22 @@ int main()
     num_of_colliders++;
 
     colliders[0]->dynamic=true;
+
+    float oldTime=clock();
+    float deltaTime;
     //time_loop
     while(true)
     {
 
         swapbuffers();
         cleardevice();
+        deltaTime=(clock()-oldTime)/1000.0;
+        if(deltaTime>0.08)
+            deltaTime=0.08;
+        oldTime=clock();
         for(int i=0; i<num_of_colliders; i++)
         {
-         colliders[i]->update(colliders,num_of_colliders);
+         colliders[i]->update(colliders,num_of_colliders,deltaTime);
         }
 
 
@@ -311,6 +325,8 @@ char handleEvent()
             return 'D';
         else if(keyCode==70)
             return 'F';
+        else
+            return '1';
 }
 
 
