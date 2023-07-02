@@ -3,6 +3,7 @@
 #include<time.h>
 #include<conio.h>
 #include<math.h>
+#include"concave_to_tris_ear_cut.h"
 struct VEC2
 {
     float X_Pos;
@@ -225,6 +226,44 @@ int main()
 
     class POLY_COLLIDER* pent=new POLY_COLLIDER(10,&pent_verticies[0],colliders,2,{176,170});
     num_of_colliders++;
+
+
+
+/*
+    //CONCAVE
+    float concave_moon[20]={198,480,
+                            189,465,
+                            189,450,
+                            200,439,
+                            215,439,
+                            231,448,
+                            217,431,
+                            196,429,
+                            179,446,
+                            181,467};
+
+
+    int concave_arr_length=20;
+    float **tris;
+    int number_of_tris=(concave_arr_length/2)-2;
+
+    tris=new float*[number_of_tris];
+    for(int i=0;i<number_of_tris;i++)
+    {
+        tris[i]=new float[8]; //3 verts consisting x and y and the last index contains the mid point
+    }
+    concave_to_tris::split_concave_poly_into_tris(&concave_moon[0],&concave_arr_length,tris);
+
+    //make this tris poly_colliders
+    for(int i=0;i<number_of_tris;i++)
+    {
+    class POLY_COLLIDER* t1=new POLY_COLLIDER(6,tris[i],colliders,3+i,{tris[i][6],tris[i][7]});
+    num_of_colliders++;
+    }
+
+    //end of CONCAVE DRAWING
+
+*/
 
     colliders[0]->dynamic=true;
 
