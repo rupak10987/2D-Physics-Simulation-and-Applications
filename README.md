@@ -5,4 +5,4 @@
 </br>
 Also for handeling concave polygons it needs to be triangulated. ear-cut algorithom is used to do this task.</br>
 ear-cut algo has also been implemented</br>
-![ear_cut_snap](https://github.com/rupak10987/Separated_axis_theorem_polygon_collision_detection_and_response/blob/f9f5b11550c3572f85b7cf4c3db6515081aa4ade/Con_cave_polygons_ear_cut/ear_cut_snap.PNG)
+![ear_cut_GUI_snap](https://github.com/rupak10987/Separated_axis_theorem_polygon_collision_detection_and_response/blob/d13c4d25f0f38f4e9064a5c14409dbba9cdbd1d9/Concave_polygons_ear_cut/ear_cut_gui.PNG)
