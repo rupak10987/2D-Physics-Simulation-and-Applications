@@ -29,7 +29,7 @@ int main()
     //initgraph(&gd, &gm, "C:\\TC\\BGI");
     initwindow(700, 700);
     //concave poly
-    float a[20];
+    float a[2000];
 
 POINT cursor;
 int p_c=0;
@@ -52,7 +52,6 @@ while(!GetAsyncKeyState(VK_RBUTTON))
         draw_line({a[i],a[i+1]},{a[j],a[j+1]},{255,255,255});
     }
 }
-
 std::cout<<"p_c="<<p_c;
 for(int i=0;i<p_c;i+=2)
 Transform_matrix_op({a[i],a[i+1]},0,0,0,0,{200,450},&a[i]);

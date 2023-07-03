@@ -29,7 +29,12 @@ int main()
     //initgraph(&gd, &gm, "C:\\TC\\BGI");
     initwindow(700, 700);
     //concave poly
-    float a[20]={198,480,
+    float a[10]={250,465,
+                337,397,
+                263,272,
+                163,298,
+                120,420};
+    /*{198,480,
                  189,465,
                  189,450,
                  200,439,
@@ -39,24 +44,24 @@ int main()
                  196,429,
                  179,446,
                  181,467
-                 };
+                 };*/
 
-for(int i=0;i<20;i+=2)
-Transform_matrix_op({a[i],a[i+1]},-45,4,0,-100,{200,450},&a[i]);
+for(int i=0;i<10;i+=2)
+Transform_matrix_op({a[i],a[i+1]},-45,0,0,-100,{200,450},&a[i]);
 
-for(int i=0;i<20;i+=2)
+for(int i=0;i<10;i+=2)
 {
-int j=(i+2)%20;
+int j=(i+2)%10;
 draw_line({a[i],a[i+1]},{a[j],a[j+1]},{255,255,255});
 }
 
-for(int i=0;i<20;i+=2)
+for(int i=0;i<10;i+=2)
 Transform_matrix_op({a[i],a[i+1]},0,0,300,0,{200,450},&a[i]);
 
 
     //define its length number_vertex*2
-    int og_length=20;
-    int ar_length=20;
+    int og_length=10;
+    int ar_length=10;
     //copy the vertex data in another array for inside point check
     float copy_a[ar_length];
     for(int i=0; i<ar_length; i++)
