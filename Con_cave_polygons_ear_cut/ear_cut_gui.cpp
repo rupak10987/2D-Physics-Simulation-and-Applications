@@ -29,34 +29,47 @@ int main()
     //initgraph(&gd, &gm, "C:\\TC\\BGI");
     initwindow(700, 700);
     //concave poly
-    float a[20]={198,480,
-                 189,465,
-                 189,450,
-                 200,439,
-                 215,439,
-                 231,448,
-                 217,431,
-                 196,429,
-                 179,446,
-                 181,467
-                 };
+    float a[20];
 
-for(int i=0;i<20;i+=2)
-Transform_matrix_op({a[i],a[i+1]},-45,4,0,-100,{200,450},&a[i]);
-
-for(int i=0;i<20;i+=2)
+POINT cursor;
+int p_c=0;
+while(!GetAsyncKeyState(VK_RBUTTON))
 {
-int j=(i+2)%20;
+    GetCursorPos(&cursor);
+    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+    {
+        delay(100);
+        a[p_c]=cursor.x;
+        a[p_c+1]=cursor.y;
+        p_c+=2;
+    }
+    for(int i=0;i<p_c;i+=2)
+    {
+
+        int j=(i-2);
+        if(j<0)
+            j=0;
+        draw_line({a[i],a[i+1]},{a[j],a[j+1]},{255,255,255});
+    }
+}
+
+std::cout<<"p_c="<<p_c;
+for(int i=0;i<p_c;i+=2)
+Transform_matrix_op({a[i],a[i+1]},0,0,0,0,{200,450},&a[i]);
+
+for(int i=0;i<p_c;i+=2)
+{
+int j=(i+2)%p_c;
 draw_line({a[i],a[i+1]},{a[j],a[j+1]},{255,255,255});
 }
 
-for(int i=0;i<20;i+=2)
-Transform_matrix_op({a[i],a[i+1]},0,0,300,0,{200,450},&a[i]);
+for(int i=0;i<p_c;i+=2)
+Transform_matrix_op({a[i],a[i+1]},0,0,0,0,{200,450},&a[i]);
 
 
     //define its length number_vertex*2
-    int og_length=20;
-    int ar_length=20;
+    int og_length=p_c;
+    int ar_length=p_c;
     //copy the vertex data in another array for inside point check
     float copy_a[ar_length];
     for(int i=0; i<ar_length; i++)
