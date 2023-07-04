@@ -1,4 +1,4 @@
-# Separated_axis_theorem_polygon_collision_detection_and_response
+# 2D PHYSICS SIMULATION AND APPLICATIONS
  polygonal collision detection and response from scratch using SAT algorithm</br>
  ![SAT_collison_detection_snap](https://github.com/rupak10987/Separated_axis_theorem_polygon_collision_detection_and_response/blob/09cf0f79c65a37a84864d5e89ef9406ad3a066a2/sat_collision_detection_convex_poly/SAT_DETECTION_IMG.PNG)
  </br>
