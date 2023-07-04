@@ -12,3 +12,6 @@
 </br>
 3.particle simulation using Varlet Integration 
 </br>
+![Varlet integration](https://github.com/rupak10987/2D-Physics-Simulation-and-Applications/blob/a041bcaa6a238a8156ee93bfdc5af53a8499edd0/Verlet_integration_sphere_physics/verlet_integration_snap.PNG)
+</br>
+[particle simulation video [download raw and watch]](https://github.com/rupak10987/2D-Physics-Simulation-and-Applications/blob/a041bcaa6a238a8156ee93bfdc5af53a8499edd0/Verlet_integration_sphere_physics/physics_sim_video.mp4)
