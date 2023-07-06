@@ -208,15 +208,11 @@ int main()
 
 
 
-    float oldTime=clock();
-    float deltaTime;
+    float deltaTime=0.02;//simulation only works good at fixed delta time
     while(true)
     {
         swapbuffers();
         cleardevice();
-        deltaTime=(clock()-oldTime)/1000.0;
-        if(deltaTime>0.02)
-            deltaTime=0.02;
         circle(500,500,450);
         GetCursorPos(&cursor_pos);
         v_balls[num_of_balls-1]->current_pos= {cursor_pos.x,cursor_pos.y};
