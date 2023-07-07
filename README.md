@@ -11,7 +11,3 @@
 [Polygon_triangulation_gui Video [download raw & watch]](https://github.com/rupak10987/Separated_axis_theorem_polygon_collision_detection_and_response/blob/09cf0f79c65a37a84864d5e89ef9406ad3a066a2/Concave_polygons_ear_cut/ear_cut_gi_vid.mp4)
 </br>
 ## 3.Particle Simulation Using VARLET INTEGRATION 
-</br>
-![Varlet_integration_img](https://github.com/rupak10987/2D-Physics-Simulation-and-Applications/blob/130875c21243379c452c4d4bf63ccad4e4548436/Verlet_integration_sphere_physics/verlet_integration_snap.PNG)
-</br>
-[physics_sim_video](https://github.com/rupak10987/2D-Physics-Simulation-and-Applications/blob/130875c21243379c452c4d4bf63ccad4e4548436/Verlet_integration_sphere_physics/physics_sim_video.mp4)
